@@ -66,12 +66,12 @@ const tasks = [
 ];
 
 const categories = [
-  { id: 1, name: 'Work', icon: 'briefcase-business', color: '#2556EA' },
-  { id: 2, name: 'Personal', icon: 'user-round', color: '#4C78F2' },
-  { id: 3, name: 'Home', icon: 'house', color: '#238A9A' },
-  { id: 4, name: 'Learning', icon: 'book-open', color: '#6B8EF5' },
-  { id: 5, name: 'Health', icon: 'heart', color: '#2C9B83' },
-  { id: 6, name: 'Finance', icon: 'wallet', color: '#3564C8' },
+  { id: 1, name: 'Work', icon: 'briefcase-business', color: '#EF4444' },
+  { id: 2, name: 'Personal', icon: 'user-round', color: '#F97316' },
+  { id: 3, name: 'Home', icon: 'house', color: '#EAB308' },
+  { id: 4, name: 'Learning', icon: 'book-open', color: '#22C55E' },
+  { id: 5, name: 'Health', icon: 'heart', color: '#3B82F6' },
+  { id: 6, name: 'Finance', icon: 'wallet', color: '#A855F7' },
 ];
 
 const categoryTags = {
@@ -82,6 +82,9 @@ const categoryTags = {
   Health: 'coral',
   Finance: 'yellow',
 };
+
+const getCategory = (name) =>
+  categories.find((category) => category.name === name);
 
 const todayInputValue = () => {
   const today = new Date();
@@ -120,9 +123,10 @@ const completionTimers = new Map();
 
 const taskMarkup = (task) => {
   const isDone = task.status === 'done' || task.pendingDone;
+  const categoryColor = getCategory(task.category)?.color || '#2556EA';
   return `<article class="task-card ${isDone ? 'done' : ''}" data-task-id="${task.id}">
   <button class="check-button" type="button" aria-label="${isDone ? 'Mark incomplete' : 'Mark complete'}">${isDone ? '<i data-lucide="check"></i>' : ''}</button>
-  <div class="task-content"><p class="task-title">${task.title}</p><div class="task-meta"><span class="tag ${task.tag}">${task.category}</span><span class="task-date">${task.date}</span></div></div>
+  <div class="task-content"><p class="task-title">${task.title}</p><div class="task-meta"><span class="tag" style="--tag-color: ${categoryColor}">${task.category}</span><span class="task-date">${task.date}</span></div></div>
   <div class="task-actions"><button class="task-action edit" type="button" aria-label="Edit ${task.title}" title="Edit task"><i data-lucide="pencil"></i></button><button class="task-action delete" type="button" aria-label="Delete ${task.title}" title="Delete task"><i data-lucide="trash-2"></i></button></div>
   </article>`;
 };
@@ -187,17 +191,39 @@ const renderCategories = () => {
         (task) => task.category === category.name,
       );
       const completed = categoryTasks.filter(
-        (task) => task.status === 'done',
+        (task) => task.status === 'done' || task.pendingDone,
       ).length;
       const total = categoryTasks.length;
       const percent = total ? Math.round((completed / total) * 100) : 0;
-      return `<article class="category-card"><div class="category-top"><p class="category-name">${category.name}</p><button class="category-edit" type="button" data-category-id="${category.id}" aria-label="Edit ${category.name} category" title="Edit category"><i data-lucide="pencil"></i></button></div><div><div class="category-bottom"><span class="category-percent">${percent}%</span><span class="category-total">${completed}/${total} completed</span></div><div class="progress-bar"><span style="--progress-color: ${category.color}; width: ${percent}%"></span></div></div></article>`;
+      return `<article class="category-card" data-category-id="${category.id}" tabindex="0" role="button" aria-label="Add task to ${category.name}"><div class="category-top"><p class="category-name">${category.name}</p><button class="category-edit" type="button" data-category-id="${category.id}" aria-label="Edit ${category.name} category" title="Edit category"><i data-lucide="pencil"></i></button></div><div><div class="category-bottom"><span class="category-percent">${percent}%</span><span class="category-total">${completed}/${total} completed</span></div><div class="progress-bar"><span style="--progress-color: ${category.color}; width: ${percent}%"></span></div></div></article>`;
     })
     .join('');
   document.querySelector('#category-grid').innerHTML = markup;
   document.querySelector('#all-category-grid').innerHTML = markup;
   document.querySelector('#category-count').textContent =
     `${categories.length} spaces`;
+  const categoryOptions = categories
+    .map(
+      (category) =>
+        `<option value="${category.name}">${category.name}</option>`,
+    )
+    .join('');
+  const addCategorySelect = document.querySelector('#add-category');
+  const editCategorySelect = document.querySelector('#edit-category');
+  const selectedAddCategory = addCategorySelect.value;
+  const selectedEditCategory = editCategorySelect.value;
+  addCategorySelect.innerHTML = categoryOptions;
+  editCategorySelect.innerHTML = categoryOptions;
+  addCategorySelect.value = categories.some(
+    (category) => category.name === selectedAddCategory,
+  )
+    ? selectedAddCategory
+    : categories[0]?.name;
+  editCategorySelect.value = categories.some(
+    (category) => category.name === selectedEditCategory,
+  )
+    ? selectedEditCategory
+    : categories[0]?.name;
   renderIcons();
 };
 
@@ -268,6 +294,7 @@ const updateProgress = () => {
     `${completed} finished`;
   document.querySelector('[data-filter="category"] span').textContent =
     categories.length;
+  renderCategories();
 };
 
 document
@@ -292,6 +319,7 @@ document.querySelectorAll('.task-list').forEach((list) =>
         clearTimeout(completionTimers.get(task.id));
         completionTimers.delete(task.id);
         renderTasks();
+        updateProgress();
         return;
       }
       task.pendingDone = true;
@@ -307,6 +335,7 @@ document.querySelectorAll('.task-list').forEach((list) =>
         }, 10000),
       );
       renderTasks();
+      updateProgress();
       return;
     }
     if (check) task.status = 'progress';
@@ -367,11 +396,17 @@ document.querySelector('#cancel-delete').addEventListener('click', () => {
   toggleDialog('delete-dialog', false);
 });
 
-document.querySelector('#add-task').addEventListener('click', () => {
+const openAddTaskDialog = (categoryName = '') => {
   toggleDialog('add-dialog', true);
   document.querySelector('#add-title').value = '';
+  if (categoryName)
+    document.querySelector('#add-category').value = categoryName;
   document.querySelector('#add-date').value = todayInputValue();
   document.querySelector('#add-title').focus();
+};
+
+document.querySelector('#add-task').addEventListener('click', () => {
+  openAddTaskDialog();
 });
 
 document.querySelector('#add-form').addEventListener('submit', (event) => {
@@ -405,6 +440,12 @@ document.querySelectorAll('.add-category-button').forEach((button) => {
       'Add category';
     document.querySelector('#category-name-input').value = '';
     document.querySelector('#category-icon-input').value = 'folder';
+    document.querySelector('#category-color-input').value = '#EF4444';
+    document
+      .querySelectorAll('.color-option')
+      .forEach((option) =>
+        option.classList.toggle('selected', option.dataset.color === '#EF4444'),
+      );
     toggleDialog('category-dialog', true);
     document.querySelector('#category-name-input').focus();
   });
@@ -413,7 +454,15 @@ document.querySelectorAll('.add-category-button').forEach((button) => {
 document.querySelectorAll('.category-grid').forEach((grid) => {
   grid.addEventListener('click', (event) => {
     const editButton = event.target.closest('.category-edit');
-    if (!editButton) return;
+    const card = event.target.closest('.category-card');
+    if (!card) return;
+    if (!editButton) {
+      const category = categories.find(
+        (item) => item.id === Number(card.dataset.categoryId),
+      );
+      openAddTaskDialog(category?.name || '');
+      return;
+    }
     editingCategory = categories.find(
       (category) => category.id === Number(editButton.dataset.categoryId),
     );
@@ -421,6 +470,16 @@ document.querySelectorAll('.category-grid').forEach((grid) => {
       'Edit category';
     document.querySelector('#category-name-input').value = editingCategory.name;
     document.querySelector('#category-icon-input').value = editingCategory.icon;
+    document.querySelector('#category-color-input').value =
+      editingCategory.color;
+    document
+      .querySelectorAll('.color-option')
+      .forEach((option) =>
+        option.classList.toggle(
+          'selected',
+          option.dataset.color === editingCategory.color,
+        ),
+      );
     toggleDialog('category-dialog', true);
     document.querySelector('#category-name-input').focus();
   });
@@ -430,11 +489,13 @@ document.querySelector('#category-form').addEventListener('submit', (event) => {
   event.preventDefault();
   const name = document.querySelector('#category-name-input').value.trim();
   const icon = document.querySelector('#category-icon-input').value;
+  const color = document.querySelector('#category-color-input').value;
   if (!name) return;
   if (editingCategory) {
     const previousName = editingCategory.name;
     editingCategory.name = name;
     editingCategory.icon = icon;
+    editingCategory.color = color;
     tasks
       .filter((task) => task.category === previousName)
       .forEach((task) => {
@@ -446,6 +507,7 @@ document.querySelector('#category-form').addEventListener('submit', (event) => {
       id: Math.max(0, ...categories.map((category) => category.id)) + 1,
       name,
       icon,
+      color,
     });
   }
   toggleDialog('category-dialog', false);
@@ -459,6 +521,20 @@ document.querySelector('#cancel-category').addEventListener('click', () => {
   editingCategory = null;
   toggleDialog('category-dialog', false);
 });
+
+document
+  .querySelector('#category-color-options')
+  .addEventListener('click', (event) => {
+    const option = event.target.closest('.color-option');
+    if (!option) return;
+    document.querySelector('#category-color-input').value =
+      option.dataset.color;
+    document
+      .querySelectorAll('.color-option')
+      .forEach((button) =>
+        button.classList.toggle('selected', button === option),
+      );
+  });
 
 renderTasks();
 renderCategories();

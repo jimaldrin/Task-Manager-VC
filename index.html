@@ -78,13 +78,6 @@
       </nav>
 
       <section class="view-section" id="all-view" data-view="all">
-        <div class="section-heading">
-          <div>
-            <p class="eyebrow">Your queue</p>
-            <h2>Today’s overview</h2>
-          </div>
-          <span class="result-count">8 tasks</span>
-        </div>
         <section class="all-subsection all-category-section">
           <div class="section-heading">
             <div>
@@ -313,6 +306,57 @@
           <option value="target">Goal</option>
           <option value="coffee">Lifestyle</option>
         </select>
+        <label class="dialog-label">Color</label>
+        <input id="category-color-input" type="hidden" value="#EF4444" />
+        <div
+          class="color-options"
+          id="category-color-options"
+          role="radiogroup"
+          aria-label="Category color"
+        >
+          <button
+            class="color-option selected"
+            type="button"
+            data-color="#EF4444"
+            aria-label="Red"
+            title="Red"
+          ></button>
+          <button
+            class="color-option"
+            type="button"
+            data-color="#F97316"
+            aria-label="Orange"
+            title="Orange"
+          ></button>
+          <button
+            class="color-option"
+            type="button"
+            data-color="#EAB308"
+            aria-label="Yellow"
+            title="Yellow"
+          ></button>
+          <button
+            class="color-option"
+            type="button"
+            data-color="#22C55E"
+            aria-label="Green"
+            title="Green"
+          ></button>
+          <button
+            class="color-option"
+            type="button"
+            data-color="#3B82F6"
+            aria-label="Blue"
+            title="Blue"
+          ></button>
+          <button
+            class="color-option"
+            type="button"
+            data-color="#A855F7"
+            aria-label="Purple"
+            title="Purple"
+          ></button>
+        </div>
         <div class="dialog-actions">
           <button
             class="dialog-button secondary"
