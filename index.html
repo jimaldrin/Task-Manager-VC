@@ -1,0 +1,399 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#f5f7f2" />
+    <title>Taskflow | Personal task manager</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="styles.css" />
+    <script src="https://unpkg.com/lucide@latest"></script>
+  </head>
+  <body>
+    <main class="app-shell">
+      <header class="topbar">
+        <div class="brand-lockup">
+          <span class="brand-mark" aria-hidden="true"
+            ><i data-lucide="sparkles"></i
+          ></span>
+          <span>taskflow</span>
+        </div>
+        <div class="topbar-actions">
+          <button
+            class="icon-button"
+            id="search-button"
+            type="button"
+            aria-label="Search tasks"
+          >
+            <i data-lucide="search"></i>
+          </button>
+          <button class="avatar" type="button" aria-label="Open profile">
+            JS
+          </button>
+        </div>
+      </header>
+
+      <section class="welcome-section" aria-labelledby="welcome-title">
+        <div>
+          <p class="eyebrow">Monday, September 7</p>
+          <h1 id="welcome-title">Good morning, Jim</h1>
+        </div>
+      </section>
+
+      <section class="focus-panel" aria-label="Today's progress">
+        <div class="focus-copy">
+          <p class="eyebrow">Daily focus</p>
+          <strong
+            ><span id="completed-count">4</span> of 8 tasks complete</strong
+          >
+          <p class="muted">A little progress adds up.</p>
+        </div>
+        <div
+          class="focus-ring"
+          id="focus-ring"
+          aria-label="50 percent complete"
+        >
+          <span>50<small>%</small></span>
+        </div>
+      </section>
+
+      <nav class="filter-nav" aria-label="Task filters">
+        <button class="filter-button active" type="button" data-filter="all">
+          All <span>8</span>
+        </button>
+        <button class="filter-button" type="button" data-filter="progress">
+          In progress <span>4</span>
+        </button>
+        <button class="filter-button" type="button" data-filter="completed">
+          Completed <span>4</span>
+        </button>
+        <button class="filter-button" type="button" data-filter="category">
+          Category <span>6</span>
+        </button>
+      </nav>
+
+      <section class="view-section" id="all-view" data-view="all">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">Your queue</p>
+            <h2>Today’s overview</h2>
+          </div>
+          <span class="result-count">8 tasks</span>
+        </div>
+        <section class="all-subsection all-category-section">
+          <div class="section-heading">
+            <div>
+              <p class="eyebrow">Focus areas</p>
+              <h2>By category</h2>
+            </div>
+            <div class="category-heading-actions">
+              <button class="text-button add-category-button" type="button">
+                Add Category <i data-lucide="plus" aria-hidden="true"></i>
+              </button>
+              <button
+                class="text-button"
+                type="button"
+                data-filter-jump="category"
+              >
+                View all <i data-lucide="arrow-up-right" aria-hidden="true"></i>
+              </button>
+            </div>
+          </div>
+          <div class="category-scroller">
+            <div class="category-grid" id="all-category-grid"></div>
+          </div>
+          <p class="category-scroll-hint">
+            <i data-lucide="move-horizontal" aria-hidden="true"></i> Swipe to
+            explore
+          </p>
+        </section>
+        <section class="all-subsection">
+          <div class="section-heading">
+            <div>
+              <p class="eyebrow">Keep moving</p>
+              <h2>In progress</h2>
+            </div>
+            <span class="result-count" id="all-progress-count">4 active</span>
+          </div>
+          <div class="task-list" id="all-progress-list"></div>
+        </section>
+        <section class="all-subsection">
+          <div class="section-heading">
+            <div>
+              <p class="eyebrow">Nice work</p>
+              <h2>Completed</h2>
+            </div>
+            <span class="result-count" id="all-completed-count"
+              >4 finished</span
+            >
+          </div>
+          <div class="task-list" id="all-completed-list"></div>
+        </section>
+      </section>
+
+      <section
+        class="view-section hidden"
+        id="progress-view"
+        data-view="progress"
+      >
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">Keep moving</p>
+            <h2>In progress</h2>
+          </div>
+          <span class="result-count">4 active</span>
+        </div>
+        <div class="task-list" id="progress-list"></div>
+      </section>
+
+      <section
+        class="view-section hidden"
+        id="completed-view"
+        data-view="completed"
+      >
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">Nice work</p>
+            <h2>Completed</h2>
+          </div>
+          <span class="result-count">4 finished</span>
+        </div>
+        <div class="task-list" id="completed-list"></div>
+      </section>
+
+      <section
+        class="view-section hidden"
+        id="category-view"
+        data-view="category"
+      >
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">See the bigger picture</p>
+            <h2>By category</h2>
+          </div>
+          <div class="category-heading-actions">
+            <button class="text-button add-category-button" type="button">
+              Add Category <i data-lucide="plus" aria-hidden="true"></i></button
+            ><span class="result-count" id="category-count">6 spaces</span>
+          </div>
+        </div>
+        <div class="category-scroller">
+          <div class="category-grid" id="category-grid"></div>
+        </div>
+        <p class="category-scroll-hint">
+          <i data-lucide="move-horizontal" aria-hidden="true"></i> Swipe to
+          explore
+        </p>
+      </section>
+
+      <button
+        class="add-task"
+        id="add-task"
+        type="button"
+        aria-label="Add new task"
+        title="Add new task"
+      >
+        <i data-lucide="plus" aria-hidden="true"></i>
+      </button>
+      <p class="footer-note">Small steps. Clear mind.</p>
+    </main>
+    <div class="toast" id="toast" role="status" aria-live="polite">
+      Task added to your queue
+    </div>
+    <div
+      class="dialog-backdrop hidden"
+      id="search-dialog"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="search-dialog-title"
+    >
+      <div class="dialog-card search-card">
+        <div class="search-heading">
+          <div>
+            <p class="eyebrow">Find a task</p>
+            <h2 id="search-dialog-title">Search your queue</h2>
+          </div>
+          <button
+            class="dialog-close"
+            id="close-search"
+            type="button"
+            aria-label="Close search"
+          >
+            <i data-lucide="x"></i>
+          </button>
+        </div>
+        <label class="dialog-label" for="search-input"
+          >Search by task, category, or date</label
+        >
+        <input
+          class="dialog-input"
+          id="search-input"
+          type="search"
+          placeholder="Try “budget” or “Personal”"
+          autocomplete="off"
+        />
+        <p class="search-hint">Results update as you type.</p>
+        <div
+          class="search-results"
+          id="search-results"
+          aria-live="polite"
+        ></div>
+      </div>
+    </div>
+    <div
+      class="dialog-backdrop hidden"
+      id="add-dialog"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="add-dialog-title"
+    >
+      <form class="dialog-card" id="add-form">
+        <p class="eyebrow">New task</p>
+        <h2 id="add-dialog-title">Add a task</h2>
+        <label class="dialog-label" for="add-title">Task name</label>
+        <input
+          class="dialog-input"
+          id="add-title"
+          type="text"
+          maxlength="80"
+          required
+        />
+        <label class="dialog-label" for="add-category">Category</label>
+        <select class="dialog-input" id="add-category">
+          <option value="Work">Work</option>
+          <option value="Personal">Personal</option>
+          <option value="Home">Home</option>
+          <option value="Learning">Learning</option>
+        </select>
+        <label class="dialog-label" for="add-date">Due date</label>
+        <input class="dialog-input" id="add-date" type="date" required />
+        <div class="dialog-actions">
+          <button class="dialog-button secondary" id="cancel-add" type="button">
+            Cancel
+          </button>
+          <button class="dialog-button primary" type="submit">Add task</button>
+        </div>
+      </form>
+    </div>
+    <div
+      class="dialog-backdrop hidden"
+      id="category-dialog"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="category-dialog-title"
+    >
+      <form class="dialog-card" id="category-form">
+        <p class="eyebrow">Category settings</p>
+        <h2 id="category-dialog-title">Add category</h2>
+        <label class="dialog-label" for="category-name-input"
+          >Category name</label
+        >
+        <input
+          class="dialog-input"
+          id="category-name-input"
+          type="text"
+          maxlength="30"
+          required
+        />
+        <label class="dialog-label" for="category-icon-input">Icon</label>
+        <select class="dialog-input" id="category-icon-input">
+          <option value="briefcase-business">Briefcase</option>
+          <option value="user-round">Person</option>
+          <option value="house">Home</option>
+          <option value="book-open">Book</option>
+          <option value="folder">Folder</option>
+          <option value="heart">Health</option>
+          <option value="wallet">Finance</option>
+          <option value="star">Star</option>
+          <option value="target">Goal</option>
+          <option value="coffee">Lifestyle</option>
+        </select>
+        <div class="dialog-actions">
+          <button
+            class="dialog-button secondary"
+            id="cancel-category"
+            type="button"
+          >
+            Cancel</button
+          ><button class="dialog-button primary" type="submit">
+            Save category
+          </button>
+        </div>
+      </form>
+    </div>
+    <div
+      class="dialog-backdrop hidden"
+      id="edit-dialog"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="edit-dialog-title"
+    >
+      <form class="dialog-card" id="edit-form">
+        <p class="eyebrow">Update task</p>
+        <h2 id="edit-dialog-title">Edit task name</h2>
+        <label class="dialog-label" for="edit-title">Task name</label>
+        <input
+          class="dialog-input"
+          id="edit-title"
+          type="text"
+          maxlength="80"
+          required
+        />
+        <label class="dialog-label" for="edit-category">Category</label>
+        <select class="dialog-input" id="edit-category">
+          <option value="Work">Work</option>
+          <option value="Personal">Personal</option>
+          <option value="Home">Home</option>
+          <option value="Learning">Learning</option>
+        </select>
+        <label class="dialog-label" for="edit-date">Due date</label>
+        <input class="dialog-input" id="edit-date" type="date" required />
+        <div class="dialog-actions">
+          <button
+            class="dialog-button secondary"
+            id="cancel-edit"
+            type="button"
+          >
+            Cancel</button
+          ><button class="dialog-button primary" type="submit">
+            Save changes
+          </button>
+        </div>
+      </form>
+    </div>
+    <div
+      class="dialog-backdrop hidden"
+      id="delete-dialog"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="delete-dialog-title"
+    >
+      <div class="dialog-card">
+        <p class="eyebrow">Remove task</p>
+        <h2 id="delete-dialog-title">Delete this task?</h2>
+        <p class="dialog-copy" id="delete-copy"></p>
+        <div class="dialog-actions">
+          <button
+            class="dialog-button secondary"
+            id="cancel-delete"
+            type="button"
+          >
+            Keep task</button
+          ><button
+            class="dialog-button danger"
+            id="confirm-delete"
+            type="button"
+          >
+            Delete task
+          </button>
+        </div>
+      </div>
+    </div>
+    <script src="script.js"></script>
+  </body>
+</html>
