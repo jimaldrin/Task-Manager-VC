@@ -8,7 +8,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
       rel="stylesheet"
     />
     <link rel="stylesheet" href="styles.css" />
@@ -21,27 +21,39 @@
           <span class="brand-mark" aria-hidden="true"
             ><i data-lucide="sparkles"></i
           ></span>
-          <span>taskflow</span>
+          <span>Tasker</span>
         </div>
         <div class="topbar-actions">
-          <button
-            class="icon-button"
-            id="search-button"
-            type="button"
-            aria-label="Search tasks"
-          >
-            <i data-lucide="search"></i>
-          </button>
-          <button class="avatar" type="button" aria-label="Open profile">
-            JS
+          <button class="avatar" id="profile-button" type="button" aria-label="Open profile panel">
+            <span id="avatar-initials">JS</span>
           </button>
         </div>
       </header>
 
-      <section class="welcome-section" aria-labelledby="welcome-title">
+      <button
+        class="search-bar"
+        id="search-button"
+        type="button"
+        aria-label="Search tasks"
+      >
+        <i data-lucide="search" aria-hidden="true"></i>
+        <span>Search tasks</span>
+        <!-- <kbd>⌘ K</kbd> -->
+      </button>
+
+      <section class="welcome-section" aria-label="Current week">
         <div>
-          <p class="eyebrow">Monday, September 7</p>
-          <h1 id="welcome-title">Good morning, Jim</h1>
+          <p class="week-calendar-month" id="week-calendar-month"></p>
+          <section
+            class="week-calendar-section"
+            aria-labelledby="week-calendar-month"
+          >
+            <div
+              class="week-calendar"
+              id="week-calendar"
+              aria-label="Current week"
+            ></div>
+          </section>
         </div>
       </section>
 
@@ -95,35 +107,95 @@
               >
                 View all <i data-lucide="arrow-up-right" aria-hidden="true"></i>
               </button>
+              <button
+                class="section-toggle"
+                type="button"
+                data-section-toggle="all-category-content"
+                aria-expanded="true"
+                aria-label="Collapse categories"
+              >
+                <i data-lucide="chevron-down" aria-hidden="true"></i>
+              </button>
             </div>
           </div>
-          <div class="category-scroller">
-            <div class="category-grid" id="all-category-grid"></div>
+          <div id="all-category-content">
+            <div class="category-scroller">
+              <div class="category-grid" id="all-category-grid"></div>
+            </div>
+            <p class="category-scroll-hint">
+              <i data-lucide="move-horizontal" aria-hidden="true"></i> Swipe to
+              explore
+            </p>
           </div>
-          <p class="category-scroll-hint">
-            <i data-lucide="move-horizontal" aria-hidden="true"></i> Swipe to
-            explore
-          </p>
         </section>
-        <section class="all-subsection">
+        <section
+          class="empty-dashboard"
+          id="empty-dashboard"
+          aria-labelledby="empty-title"
+        >
+          <div class="empty-illustration" aria-hidden="true">
+            <div class="empty-spark spark-one"></div>
+            <div class="empty-spark spark-two"></div>
+            <div class="empty-sheet">
+              <span class="sheet-line line-long"></span>
+              <span class="sheet-line line-medium"></span>
+              <span class="sheet-line line-short"></span>
+              <span class="sheet-check check-one"></span>
+              <span class="sheet-check check-two"></span>
+            </div>
+            <div class="empty-shadow"></div>
+          </div>
+          <p class="eyebrow">A fresh start</p>
+          <h2 id="empty-title">Nothing on your list yet</h2>
+          <p class="empty-copy">
+            Add your first task to turn a clear mind into a clear plan.
+          </p>
+          <button class="empty-cta" id="empty-add-task" type="button">
+            <i data-lucide="plus" aria-hidden="true"></i>
+            Create your first task
+          </button>
+        </section>
+        <section class="all-subsection" id="all-progress-section">
           <div class="section-heading">
             <div>
               <p class="eyebrow">Keep moving</p>
               <h2>In progress</h2>
             </div>
-            <span class="result-count" id="all-progress-count">4 active</span>
+            <div class="section-heading-actions">
+              <span class="result-count" id="all-progress-count">4 active</span>
+              <button
+                class="section-toggle"
+                type="button"
+                data-section-toggle="all-progress-list"
+                aria-expanded="true"
+                aria-label="Collapse in progress tasks"
+              >
+                <i data-lucide="chevron-down" aria-hidden="true"></i>
+              </button>
+            </div>
           </div>
           <div class="task-list" id="all-progress-list"></div>
         </section>
-        <section class="all-subsection">
+        <section class="all-subsection" id="all-completed-section">
           <div class="section-heading">
             <div>
               <p class="eyebrow">Nice work</p>
               <h2>Completed</h2>
             </div>
-            <span class="result-count" id="all-completed-count"
-              >4 finished</span
-            >
+            <div class="section-heading-actions">
+              <span class="result-count" id="all-completed-count"
+                >4 finished</span
+              >
+              <button
+                class="section-toggle"
+                type="button"
+                data-section-toggle="all-completed-list"
+                aria-expanded="true"
+                aria-label="Collapse completed tasks"
+              >
+                <i data-lucide="chevron-down" aria-hidden="true"></i>
+              </button>
+            </div>
           </div>
           <div class="task-list" id="all-completed-list"></div>
         </section>
@@ -139,7 +211,18 @@
             <p class="eyebrow">Keep moving</p>
             <h2>In progress</h2>
           </div>
-          <span class="result-count">4 active</span>
+          <div class="section-heading-actions">
+            <span class="result-count">4 active</span>
+            <button
+              class="section-toggle"
+              type="button"
+              data-section-toggle="progress-list"
+              aria-expanded="true"
+              aria-label="Collapse in progress tasks"
+            >
+              <i data-lucide="chevron-down" aria-hidden="true"></i>
+            </button>
+          </div>
         </div>
         <div class="task-list" id="progress-list"></div>
       </section>
@@ -154,7 +237,18 @@
             <p class="eyebrow">Nice work</p>
             <h2>Completed</h2>
           </div>
-          <span class="result-count">4 finished</span>
+          <div class="section-heading-actions">
+            <span class="result-count">4 finished</span>
+            <button
+              class="section-toggle"
+              type="button"
+              data-section-toggle="completed-list"
+              aria-expanded="true"
+              aria-label="Collapse completed tasks"
+            >
+              <i data-lucide="chevron-down" aria-hidden="true"></i>
+            </button>
+          </div>
         </div>
         <div class="task-list" id="completed-list"></div>
       </section>
@@ -171,17 +265,40 @@
           </div>
           <div class="category-heading-actions">
             <button class="text-button add-category-button" type="button">
-              Add Category <i data-lucide="plus" aria-hidden="true"></i></button
-            ><span class="result-count" id="category-count">6 spaces</span>
+              Add Category <i data-lucide="plus" aria-hidden="true"></i>
+            </button>
+            <span class="result-count" id="category-count">6 spaces</span>
+            <button
+              class="section-toggle"
+              type="button"
+              data-section-toggle="category-content"
+              aria-expanded="true"
+              aria-label="Collapse categories"
+            >
+              <i data-lucide="chevron-down" aria-hidden="true"></i>
+            </button>
           </div>
         </div>
-        <div class="category-scroller">
-          <div class="category-grid" id="category-grid"></div>
+        <div id="category-content">
+          <div class="category-scroller">
+            <div class="category-grid" id="category-grid"></div>
+          </div>
+          <p class="category-scroll-hint">
+            <i data-lucide="move-horizontal" aria-hidden="true"></i> Swipe to
+            explore
+          </p>
         </div>
-        <p class="category-scroll-hint">
-          <i data-lucide="move-horizontal" aria-hidden="true"></i> Swipe to
-          explore
-        </p>
+      </section>
+
+      <section class="view-section trash-page hidden" id="trash-view" data-view="trash">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">Recycle bin</p>
+            <h2>Trash</h2>
+          </div>
+          <span class="result-count" id="trash-page-count">0 items</span>
+        </div>
+        <div class="trash-list trash-page-list" id="trash-page-list"></div>
       </section>
 
       <button
@@ -193,8 +310,44 @@
       >
         <i data-lucide="plus" aria-hidden="true"></i>
       </button>
-      <p class="footer-note">Small steps. Clear mind.</p>
+      <button
+        class="back-to-top"
+        id="back-to-top"
+        type="button"
+        aria-label="Back to top"
+        title="Back to top"
+      >
+        <i data-lucide="arrow-up" aria-hidden="true"></i>
+      </button>
     </main>
+    <div class="side-panel-backdrop hidden" id="side-panel-backdrop">
+      <aside class="side-panel" aria-label="Profile and settings">
+        <div class="side-panel-heading">
+          <div class="side-brand"><span class="brand-mark"><i data-lucide="sparkles" aria-hidden="true"></i></span><span>Tasker</span></div>
+          <button class="dialog-close" id="close-side-panel" type="button" aria-label="Close panel">
+            <i data-lucide="x" aria-hidden="true"></i>
+          </button>
+        </div>
+        <div class="profile-editor profile-summary">
+          <button class="profile-photo" id="profile-photo-button" type="button" aria-label="Set profile picture">
+            <img class="hidden" id="profile-photo-preview" alt="Profile" />
+            <span id="profile-photo-initials">JS</span>
+          </button>
+          <strong id="profile-name-display">Jim</strong>
+          <button class="side-edit-button" id="edit-profile-name" type="button" aria-label="Edit name"><i data-lucide="pencil" aria-hidden="true"></i></button>
+          <input id="profile-picture-input" type="file" accept="image/png,image/jpeg" hidden />
+        </div>
+        <nav class="side-nav" aria-label="Main navigation">
+          <button class="side-nav-item active" type="button" data-side-view="all"><i data-lucide="house" aria-hidden="true"></i><span>Dashboard</span></button>
+          <button class="side-nav-item" type="button" data-side-view="trash"><i data-lucide="trash-2" aria-hidden="true"></i><span>Trash</span><span class="side-nav-count" id="side-trash-count">0</span></button>
+          <button class="theme-toggle" id="theme-toggle" type="button">
+            <i data-lucide="moon" aria-hidden="true"></i>
+            <span>Dark mode</span>
+            <span class="theme-switch" aria-hidden="true"></span>
+          </button>
+        </nav>
+      </aside>
+    </div>
     <div class="toast" id="toast" role="status" aria-live="polite">
       Task added to your queue
     </div>
@@ -256,6 +409,18 @@
           maxlength="80"
           required
         />
+        <label class="dialog-label" for="add-note"
+          >Note <span>(optional)</span></label
+        >
+        <textarea
+          class="dialog-input dialog-textarea"
+          id="add-note"
+          maxlength="200"
+          rows="3"
+          placeholder="Add a helpful detail..."
+          aria-describedby="add-note-count"
+        ></textarea>
+        <p class="field-count" id="add-note-count">0 / 200 characters</p>
         <label class="dialog-label" for="add-category">Category</label>
         <select class="dialog-input" id="add-category">
           <option value="Work">Work</option>
@@ -263,6 +428,13 @@
           <option value="Home">Home</option>
           <option value="Learning">Learning</option>
         </select>
+        <label class="dialog-label" for="add-created-date">Date created</label>
+        <input
+          class="dialog-input"
+          id="add-created-date"
+          type="date"
+          required
+        />
         <label class="dialog-label" for="add-date">Due date</label>
         <input class="dialog-input" id="add-date" type="date" required />
         <div class="dialog-actions">
@@ -359,6 +531,13 @@
         </div>
         <div class="dialog-actions">
           <button
+            class="dialog-button danger delete-category-button hidden"
+            id="delete-category"
+            type="button"
+          >
+            Delete category
+          </button>
+          <button
             class="dialog-button secondary"
             id="cancel-category"
             type="button"
@@ -388,6 +567,18 @@
           maxlength="80"
           required
         />
+        <label class="dialog-label" for="edit-note"
+          >Note <span>(optional)</span></label
+        >
+        <textarea
+          class="dialog-input dialog-textarea"
+          id="edit-note"
+          maxlength="200"
+          rows="3"
+          placeholder="Add a helpful detail..."
+          aria-describedby="edit-note-count"
+        ></textarea>
+        <p class="field-count" id="edit-note-count">0 / 200 characters</p>
         <label class="dialog-label" for="edit-category">Category</label>
         <select class="dialog-input" id="edit-category">
           <option value="Work">Work</option>
@@ -395,6 +586,13 @@
           <option value="Home">Home</option>
           <option value="Learning">Learning</option>
         </select>
+        <label class="dialog-label" for="edit-created-date">Date created</label>
+        <input
+          class="dialog-input"
+          id="edit-created-date"
+          type="date"
+          required
+        />
         <label class="dialog-label" for="edit-date">Due date</label>
         <input class="dialog-input" id="edit-date" type="date" required />
         <div class="dialog-actions">
